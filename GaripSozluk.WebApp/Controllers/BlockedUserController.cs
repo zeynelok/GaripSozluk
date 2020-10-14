@@ -18,7 +18,7 @@ namespace GaripSozluk.WebApp.Controllers
             _blockedUserService = blockedUserService;
         }
 
-      
+      //Engelli Kullanıcıları çekme
         public IActionResult GetBlockedUsers()
         {
 
@@ -27,7 +27,7 @@ namespace GaripSozluk.WebApp.Controllers
             return View(blockedUsers);
         }
 
-    
+    // Kullanıcı engelleme
         public IActionResult AddBlockedUser(int blockedUserId)
         {
          
@@ -36,6 +36,7 @@ namespace GaripSozluk.WebApp.Controllers
             return Redirect(Url.Action("Index", "Home"));
         }
 
+        // Kullanıcı Engeli kaldırma
         public IActionResult RemoveBlockedUser(int blockedUserId)
         {
             var serviceStatus = _blockedUserService.RemoveBlockedUser(blockedUserId);

@@ -22,14 +22,8 @@ namespace GaripSozluk.WebApp.Controllers
             _postService = postService;
             _logger = logger;
         }
-        //public IActionResult PostList(int id)
-        //{
-
-        //    var result = _postService.GetAllByCategoryId(id);
-        //    ViewBag.Post = result;
-        //    return View();
-        //   // return Redirect(Url.Action("Index","Home"));
-        //}
+      
+        //Post Ekleme
         [Authorize]
         public IActionResult AddPost(int selectedCategoryId = 1)
         {
@@ -59,6 +53,7 @@ namespace GaripSozluk.WebApp.Controllers
             return View(model);
         }
 
+        //Random post çekme
         public IActionResult GetRandomPost()
         {
 
@@ -67,6 +62,7 @@ namespace GaripSozluk.WebApp.Controllers
             return Redirect(Url.Action("Index", "Home", new { postId = postId }));
         }
 
+        //Post beğenme
         [Authorize]
         public IActionResult PostRating(int ratingPostId, string type)
         {

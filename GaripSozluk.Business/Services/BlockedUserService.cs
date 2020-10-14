@@ -19,12 +19,14 @@ namespace GaripSozluk.Business.Services
         private readonly IBlockedUserRepository _blockedUserRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly UserManager<User> _userManager;
-        public BlockedUserService(IBlockedUserRepository blockedUserRepository, IHttpContextAccessor httpContextAccessor,UserManager<User> userManager)
+        public BlockedUserService(IBlockedUserRepository blockedUserRepository, IHttpContextAccessor httpContextAccessor, UserManager<User> userManager)
         {
             _blockedUserRepository = blockedUserRepository;
             _httpContextAccessor = httpContextAccessor;
             _userManager = userManager;
         }
+
+        // Engellenen kullanıcıların listesinin çekilmesi
         public List<BlockedUserVM> GetBlockedUsers()
         {
             var httpUser = _httpContextAccessor.HttpContext.User;
@@ -44,6 +46,7 @@ namespace GaripSozluk.Business.Services
             return list;
         }
 
+        // Kullanıcı engelleme
         public ServiceStatus AddBlockedUser(int blockedUserId)
         {
             var serviceStatus = new ServiceStatus();
@@ -56,9 +59,7 @@ namespace GaripSozluk.Business.Services
                 {
                     var blockedUser = new BlockedUser();
                     blockedUser.BlockedUserId = blockedUserId;
-
                     blockedUser.UserId = userId;
-
                     blockedUser.CreateDate = DateTime.Now;
                     _blockedUserRepository.Add(blockedUser);
                     try
@@ -76,15 +77,15 @@ namespace GaripSozluk.Business.Services
             }
 
             return serviceStatus;
-
         }
 
+        // Engel Kaldırma
         public ServiceStatus RemoveBlockedUser(int blockedUserId)
         {
             var serviceStatus = new ServiceStatus();
             var httpUser = _httpContextAccessor.HttpContext.User;
             var userId = int.Parse(httpUser.Claims.ToList().Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value);
-            var blockedUser = _blockedUserRepository.Get(x => x.BlockedUserId == blockedUserId && x.UserId==userId);
+            var blockedUser = _blockedUserRepository.Get(x => x.BlockedUserId == blockedUserId && x.UserId == userId);
             _blockedUserRepository.Remove(blockedUser);
             try
             {
@@ -97,7 +98,7 @@ namespace GaripSozluk.Business.Services
 
                 throw;
             }
-          
+
         }
     }
 }

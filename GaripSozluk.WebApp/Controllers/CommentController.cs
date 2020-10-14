@@ -16,9 +16,11 @@ namespace GaripSozluk.WebApp.Controllers
         {
             _commentService = commentService;
         }
-       
+
+
+        //// Yorum Ekleme
         [Authorize]
-        public IActionResult AddComment(int postId,int selectedCategoryId)
+        public IActionResult AddComment(int postId, int selectedCategoryId)
         {
             ViewBag.selectedCategoryId = selectedCategoryId;
             ViewBag.selectedPostId = postId;
@@ -26,14 +28,14 @@ namespace GaripSozluk.WebApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddComment(CommentVM model,int selectedCategoryId,int postId= 1)
+        public IActionResult AddComment(CommentVM model, int selectedCategoryId, int postId = 1)
         {
             if (ModelState.IsValid)
             {
-                var serviceStatus = _commentService.AddComment(model,postId);
+                var serviceStatus = _commentService.AddComment(model, postId);
                 if (serviceStatus.Status)
                 {
-                    return Redirect(Url.Action("Index", "Home",new { postId=postId, selectedCategoryId = selectedCategoryId}));
+                    return Redirect(Url.Action("Index", "Home", new { postId = postId, selectedCategoryId = selectedCategoryId }));
                 }
             }
             return View();

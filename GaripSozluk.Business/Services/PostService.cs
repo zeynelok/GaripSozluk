@@ -17,17 +17,13 @@ namespace GaripSozluk.Business.Services
     {
         private readonly IPostRepository _postRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly SignInManager<User> _signInManager;
         private readonly ICommentService _commentService;
-        private readonly IBlockedUserService _blockedUserService;
         private readonly IRatingRepository _ratingRepository;
         public PostService(IPostRepository postRepository, IHttpContextAccessor httpContextAccessor, SignInManager<User> signInManager, ICommentService commentService, IBlockedUserService blockedUserService, IRatingRepository ratingRepository)
         {
             _postRepository = postRepository;
             _httpContextAccessor = httpContextAccessor;
-            _signInManager = signInManager;
             _commentService = commentService;
-            _blockedUserService = blockedUserService;
             _ratingRepository = ratingRepository;
         }
 
@@ -47,10 +43,7 @@ namespace GaripSozluk.Business.Services
             return list;
         }
 
-        public Post Get(Expression<Func<Post, bool>> expression)
-        {
-            return _postRepository.Get(expression);
-        }
+
 
         // Post Ekleme
         public ServiceStatus AddPost(PostVM model)
@@ -118,7 +111,7 @@ namespace GaripSozluk.Business.Services
         // Aramalar 
         public SearchVM SearchPost(SearchVM model)
         {
-            var query = _postRepository.GetAll().Where(x => true);
+            var query = _postRepository.GetAll();
 
             if (!string.IsNullOrEmpty(model.text))
             {
@@ -154,6 +147,7 @@ namespace GaripSozluk.Business.Services
             return model;
         }
 
+        // Random post çekme
         public int GetRandomPost()
         {
             List<int> postIds = new List<int>();
@@ -170,7 +164,7 @@ namespace GaripSozluk.Business.Services
 
         }
 
-
+        // Post beğenme 
         public void PostRating(int ratingPostId, string type)
         {
             var httpUser = _httpContextAccessor.HttpContext.User;

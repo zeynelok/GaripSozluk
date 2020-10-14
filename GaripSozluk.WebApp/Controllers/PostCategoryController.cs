@@ -21,14 +21,6 @@ namespace GaripSozluk.WebApp.Controllers
             return View();
         }
 
-        //public IActionResult PostCategoryList()
-        //{
-        
-        //  var result=  _postCategoryService.PostCategoryList().ToList();
-        //    ViewBag.PostCategory = result;
-        //    return View();
-        //}
-
 
         public IActionResult AddPostCategory()
         {

@@ -27,17 +27,13 @@ namespace GaripSozluk.WebApp.Controllers
             _commentService = commentService;
         }
 
+        // Ana Sayfa
         public IActionResult Index(int selectedCategoryId=1, int? postId=null,int currentPage=1)
-        {
-                       
+        {                 
             ViewBag.PostCategory = _postCategoryService.PostCategoryList(selectedCategoryId);          
             ViewBag.PostCategoryName = _postCategoryService.GetPostCategory(selectedCategoryId);
             ViewBag.Post = _postService.GetAllByCategoryId(selectedCategoryId).ToList();
-
-
-            //ViewBag.CommentCount = _postService.GetAllByCategoryIdCommentCount(selectedCategoryId);
                         
-
             // postıd hasvalue ise postu ve yorumlarını çek
             if (postId.HasValue)
             {
@@ -51,18 +47,20 @@ namespace GaripSozluk.WebApp.Controllers
             }
         }
 
-
+        // Arama
         public IActionResult SearchPost(SearchVM model)
         {
-            var hebele = _postService.SearchPost(model);
-            return View(hebele);
+            var search = _postService.SearchPost(model);
+            return View(search);
         }
+
+        //Detaylı arama
         public IActionResult DetailSearchPost(SearchVM model)
         {
             if (ModelState.IsValid)
             {
-                var hebele = _postService.SearchPost(model);
-                return View(hebele);
+                var search = _postService.SearchPost(model);
+                return View(search);
             }
 
             return View();

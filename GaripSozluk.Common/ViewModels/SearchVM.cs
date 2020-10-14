@@ -21,10 +21,7 @@ namespace GaripSozluk.Common.ViewModels
         [Display(Name ="Bitiş Tarihi")]
         public DateTime? endDate { get; set; }
         public List<Post> posts { get; set; }
-    
-        public int postId { get; set; }
-        public int postCategoryId { get; set; }
-       
+         
 
     }
 }

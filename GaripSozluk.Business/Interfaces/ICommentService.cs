@@ -9,7 +9,6 @@ namespace GaripSozluk.Business.Interfaces
 {
    public interface ICommentService
     {
-        /* IQueryable<Comment> GetAll();*/
         List<CommentRowVM> GetAllByPostId(int postId);
 
         ServiceStatus AddComment(CommentVM model,int postId);

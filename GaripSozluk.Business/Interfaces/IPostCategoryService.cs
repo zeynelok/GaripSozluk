@@ -11,11 +11,9 @@ namespace GaripSozluk.Business.Interfaces
 {
     public interface IPostCategoryService
     {
-        //IQueryable<PostCategory> PostCategoryList();
-        List<SelectListItem> PostCategoryList(int selectedCategoryId = 0);
+        List<SelectListItem> PostCategoryList(int selectedCategoryId);
         PostCategory GetPostCategory(int selectedCategoryId);
       
-        PostCategoryVM AddPostCategory(PostCategoryVM model);
-        PostCategoryVM UpdatePostCategory(PostCategoryVM model);
+    
     }
 }

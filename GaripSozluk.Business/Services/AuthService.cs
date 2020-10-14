@@ -23,6 +23,8 @@ namespace GaripSozluk.Business.Services
             _signInManager = signInManager;
 
         }
+
+        //Kullanıcı Kayıt
         public ServiceStatus Register(RegisterVM model)
         {
             var serviceStatus = new ServiceStatus();
@@ -37,15 +39,12 @@ namespace GaripSozluk.Business.Services
             else
             {
                 serviceStatus.Status = false;
-                //foreach (var error in result.Errors)
-                //{
-                //    ModelState.AddModelError("", $"{error.Code} -> {error.Description}");
-                //}
-
             }
             return serviceStatus;
         }
 
+
+        //Kullanıcı Giriş
         public ServiceStatus Login(LoginVM model)
         {
             var serviceStatus = new ServiceStatus();
@@ -59,15 +58,12 @@ namespace GaripSozluk.Business.Services
             else
             {
                 serviceStatus.Status = false;
-                //foreach (var error in result.Errors)
-                //{
-                //    ModelState.AddModelError("", $"{error.Code} -> {error.Description}");
-                //}
 
             }
             return serviceStatus;
         }
 
+        //Çıkış
         public void LogOut()
         {
             _signInManager.SignOutAsync().Wait();
