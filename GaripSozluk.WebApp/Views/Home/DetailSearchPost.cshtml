@@ -1,0 +1,79 @@
+﻿@model SearchVM
+@{
+    ViewData["Title"] = "DetailSearchPost";
+}
+
+<h1>Detaylı Arama</h1>
+<br />
+
+<div class="row  m-5">
+    <form asp-controller="Home" asp-action="DetailSearchPost" method="get" class="col-md-12" id="filterForm">
+        <div class="row">
+            <div asp-validation-summary="All" class="text-danger"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group form-row">
+                    <label class="control-label col-md-4" asp-for="text"></label>
+                    <input class="form-control col-md-8" asp-for="text" />
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group form-row">
+                    <label class="control-label col-md-4" asp-for="ranking"></label>
+                    <select class="form-control col-md-8" asp-for="ranking">
+                        <option value="1" selected>Yeniden Eskiye</option>
+                        <option value="2">Eskiden Yeniye</option>
+
+                    </select>
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="row">
+
+            <div class="col-md-6">
+                <div class="form-group form-row">
+                    <label class="control-label col-md-4" asp-for="startDate"></label>
+                    <input class="form-control col-md-8" asp-for="startDate" type="date" />
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group form-row">
+                    <label class="control-label col-md-4" asp-for="endDate"></label>
+                    <input class="form-control col-md-8" asp-for="endDate" type="date" />
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <button class="btn btn-outline-secondary float-right" type="submit" id="filterFormSubmit">Filtrele</button>
+            </div>
+        </div>
+    </form>
+</div>
+<br />
+@if (Model != null)
+{
+    @foreach (var item in Model.posts)
+    {
+        <div class="col-12">
+
+            <ul>
+                <li class="list-group">
+                    <h3>
+                        <a class="btn btn-light d-flex justify-content-between align-items-center" asp-route-selectedCategoryId="@item.PostCategoryId" asp-controller="home" asp-action="index" asp-route-postId="@item.Id">
+                            @item.Title
+                        </a>
+                    </h3>
+                </li>
+            </ul>
+
+        </div>
+    }
+}

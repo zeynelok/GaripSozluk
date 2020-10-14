@@ -1,0 +1,35 @@
+﻿@model CommentVM
+@{
+    ViewData["Title"] = "AddComment";
+  
+}
+
+<h1>Yorum Ekle</h1>
+<form asp-action="AddComment" asp-controller="Comment" method="post">
+    <br />
+    <input type="hidden" name="postId" value="@ViewBag.selectedPostId" />
+    <input type="hidden" name="selectedCategoryId" value="@ViewBag.selectedCategoryId" />
+
+    <div class="row">
+        <div asp-validation-summary="All" class="text-danger"></div>
+    </div>
+    <div class="form-group form-row d-flex justify-content-center  mb-3">
+        <label asp-for="Content" class="control-label col-md-2"></label>
+        <input asp-for="Content" class="form-control col-md-4" />
+    </div>
+
+
+    <div class="d-flex justify-content-around  mb-3">
+
+
+        <div class="p-2">
+            <a class="btn btn-secondary" href="/Home/Index">Vazgeç</a>
+        </div>
+        <div class="p-2">
+            <button type="submit" class="btn btn-primary">Paylaş</button>
+        </div>
+
+    </div>
+
+</form>
+

@@ -1,0 +1,45 @@
+﻿
+@model GaripSozluk.Common.ViewModels.LoginVM
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<br />
+<h1>Giriş</h1>
+<form asp-action="Login" asp-controller="Authentication" method="post">
+    <br />
+    <div class="row">
+        <div asp-validation-summary="All" class="text-danger"></div>
+    </div>
+    <div class="form-group form-row d-flex justify-content-center  mb-3">
+        <label asp-for="UserName" class="control-label col-md-2"></label>
+        <input asp-for="UserName" class="form-control col-md-4" />
+    </div>
+
+
+    <div class="form-group form-row  d-flex justify-content-center  mb-3">
+        <label asp-for="Password" class="control-label col-md-2"></label>
+        <input asp-for="Password" class="form-control col-md-4" type="password" />
+    </div>
+    <div class="form-group form-row  d-flex justify-content-center  mb-3">
+        <label class="form-check-label">
+            <input class="form-check-input" asp-for="IsPersistent" /> @Html.DisplayNameFor(model => model.IsPersistent)
+        </label>
+    </div>
+    <div class="d-flex justify-content-around  mb-3">
+        <div class="p-2">
+            <a class="" href="#">Şifremi Unuttum</a>
+        </div>
+
+        <div class="p-2">
+            <a class="btn btn-secondary" href="/Home/Index">Vazgeç</a>
+        </div>
+        <div class="p-2">
+            <button type="submit" class="btn btn-primary">Giriş</button>
+        </div>
+
+    </div>
+
+</form>
+

@@ -1,0 +1,129 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] GaripSozluk</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+
+<body>
+
+    <nav class="navbar shadow bg-light navbar-light sticky-top rounded">
+        <div class="row col-12">
+            <div class="col-1"></div>
+            <div class="col-1">
+                <a href="/Home/Index"> <img src="/logo.png" width="50" height="30" class="d-inline-block align-top" alt=""></a>
+            </div>
+            <div class="col-1"></div>
+            <form class="col-5" asp-controller="Home" asp-action="SearchPost" method="post">
+                <input class="col-6" type="search" name="text" placeholder="Arama..." />
+                <button class="btn btn-outline-success col-2 m-0 p-1 " type="submit">Ara</button>
+                <a class="btn btn-outline-success m-0 p-1 " href="/Home/DetailSearchPost">Ayrıntılı Ara</a>
+            </form>
+         
+
+            @if (!Context.User.Identity.IsAuthenticated)
+            {
+                <div class="col-1">
+                    <a class="" href="/Authentication/Login">Giriş</a>
+                </div>
+                <div class="col-1">
+                    <a class="" href="/Authentication/Register">Kayıt Ol</a>
+                </div>
+            }
+
+            else
+            {
+                <div class="col-1">
+                    <a class="" href="/BlockedUser/GetBlockedUsers">@Context.User.Identity.Name</a>
+                </div>
+                @if (ViewBag.PostCategoryName != null)
+                {
+                    <div class="col-1">
+                        <a class="" asp-action="AddPost" asp-controller="Post" asp-route-selectedCategoryId="@ViewBag.PostCategoryName.Id">Post Ekle</a>
+                    </div>
+                }
+
+                <div class="col-1">
+                    <a class="" href="/Authentication/LogOut">Çıkış</a>
+                </div>
+            }
+
+            <div class="row col-12">
+                @if (ViewBag.PostCategory != null)
+                {
+                    @foreach (var item in ViewBag.PostCategory)
+                    {
+                        <div class="col-2">
+                            <a class="nav-link" asp-route-selectedCategoryId="@item.Value" asp-controller="Home" asp-action="Index">@item.Text</a>
+                        </div>
+                    }
+                }
+
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="row">
+        <div class="group col-2 border" style="overflow:auto;height:100%; position:fixed;">
+            <br />
+
+            @if (ViewBag.Post != null && ViewBag.PostCategoryName != null)
+            {
+                <p>@ViewBag.PostCategoryName.Title</p>
+                @foreach (var item in ViewBag.Post)
+                {
+                    <ul class="col-12">
+                        <a class="btn btn-light d-flex justify-content-between align-items-center" asp-controller="Home" asp-action="Index" asp-route-selectedCategoryId="@ViewBag.PostCategoryName.Id" asp-route-postId="@item.postId">
+                            @item.Title
+                            <span class="badge badge-primary badge-pill">@item.CommentCount</span> 
+                         </a>
+                    </ul>
+                }
+            }
+
+        </div>
+
+        <div class="col-1"></div>
+        <div class="container col-8">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
+        <div class="col-1"></div>
+    </div>
+
+
+
+    <footer class="footer text-muted" style="text-align:-webkit-center; ">
+        <div class="container">
+            <div class="row col-8">
+                <div class="col-3">
+                    <a href="#">Privacy</a>
+                </div>
+                <div class="col-3">
+                    <a href="#">Privacy</a>
+                </div>
+                <div class="col-3">
+                    <a href="#">Privacy</a>
+                </div>
+                <div class="col-3">
+                    <a href="#">Privacy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

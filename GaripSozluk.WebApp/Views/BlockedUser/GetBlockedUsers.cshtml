@@ -1,0 +1,30 @@
+﻿@model List<BlockedUserVM>
+@{
+    ViewData["Title"] = "GetBlockedUsers";
+}
+
+<h1>Engellenen Kullanıcılar</h1>
+<br />
+<br />
+@if (Model != null)
+{
+    @foreach (var item in Model)
+    {
+        <div class="col-12">
+
+            <ul>
+                <li class="list-group">
+                    <h3>
+                        <a title="Engeli kaldırmak için tıklayın" class="btn btn-light d-flex justify-content-between align-items-center" asp-route-blockedUserId="@item.BlockedUserId" asp-controller="BlockedUser" asp-action="RemoveBlockedUser">
+                            @item.BlockedUserName
+                        </a>
+                    </h3>
+                </li>
+            </ul>
+
+        </div>
+    }
+}
+
+
+

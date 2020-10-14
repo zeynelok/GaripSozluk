@@ -1,0 +1,49 @@
+﻿@model GaripSozluk.Common.ViewModels.RegisterVM
+@{
+    ViewData["Title"] = "Register";
+}
+<br />
+<h1>Kayıt</h1>
+<form asp-action="Register" asp-controller="Authentication" method="post">
+    <br />
+    <div class="row">
+        <div asp-validation-summary="All" class="text-danger"></div>
+    </div>
+    <div class="form-group form-row d-flex justify-content-center  mb-3">
+        <label asp-for="UserName" class="control-label col-md-2"></label>
+        <input asp-for="UserName" class="form-control col-md-4" />
+    </div>
+    <div class="form-group form-row  d-flex justify-content-center  mb-3">
+        <label asp-for="Email" class="control-label col-md-2"></label>
+        <input asp-for="Email" class="form-control col-md-4" />
+    </div>
+
+    <div class="form-group form-row  d-flex justify-content-center  mb-3">
+        <label asp-for="BirthDate" class="control-label col-md-2"></label>
+        <input asp-for="BirthDate" class="form-control col-md-4" type="date" />
+    </div>
+
+    <div class="form-group form-row  d-flex justify-content-center  mb-3">
+        <label asp-for="Password" class="control-label col-md-2"></label>
+        <input asp-for="Password" class="form-control col-md-4" type="password" />
+    </div>
+    <div class="form-group form-row d-flex justify-content-center  mb-3">
+        <label asp-for="ConfirmPassword" class="control-label col-md-2"></label>
+        <input asp-for="ConfirmPassword" class="form-control col-md-4" type="password" />
+    </div>
+    <div class="d-flex justify-content-around  mb-3">
+        <div class="p-2">
+            <a class="btn btn-secondary" href="/Home/Index">Vazgeç</a>
+        </div>
+        <div class="p-2">
+            <button type="submit" class="btn btn-primary">Kaydol</button>
+        </div>
+
+    </div>
+    
+</form>
+
+
+
+
+
