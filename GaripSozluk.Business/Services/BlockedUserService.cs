@@ -37,6 +37,7 @@ namespace GaripSozluk.Business.Services
                 var blocked = new BlockedUserVM();
                 blocked.BlockedUserId = item.BlockedUserId;
                 blocked.BlockedUserName = item.User.UserName;
+                blocked.UserId = item.UserId;
                 list.Add(blocked);
             }
 

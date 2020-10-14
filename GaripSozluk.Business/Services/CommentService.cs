@@ -16,33 +16,49 @@ namespace GaripSozluk.Business.Services
     {
         private readonly ICommentRepository _commentRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public CommentService(ICommentRepository commentRepository, IHttpContextAccessor httpContextAccessor)
+        private readonly IBlockedUserService _blockedUserService;
+        public CommentService(ICommentRepository commentRepository, IHttpContextAccessor httpContextAccessor, IBlockedUserService blockedUserService)
         {
             _commentRepository = commentRepository;
             _httpContextAccessor = httpContextAccessor;
+            _blockedUserService = blockedUserService;
         }
 
+        // post Id ye göre tüm yorumları getirme
         public List<CommentRowVM> GetAllByPostId(int postId)
         {
+            var httpUser = _httpContextAccessor.HttpContext.User;
+
+            List<int> blockedUserIds = new List<int>();
             var Comments = new List<CommentRowVM>();
             var commentEntities = _commentRepository.GetAll(x => x.PostId == postId).Include("User");
 
-            if (commentEntities != null)
+            if (httpUser.Identity.IsAuthenticated == true)
             {
-                foreach (var item in commentEntities)
+                var blockedUsers = _blockedUserService.GetBlockedUsers();
+
+                foreach (var item in blockedUsers)
                 {
-                    var result = new CommentRowVM();
-                    result.Text = item.Text;
-                    result.UserId = item.UserId;
-                    result.CommentDate = item.UpdateDate??item.CreateDate;
-                    result.UserName = item.User.UserName;
-                    Comments.Add(result);
+                    blockedUserIds.Add(item.BlockedUserId);
                 }
+                commentEntities = commentEntities.Where(x => !blockedUserIds.Contains(x.UserId));
             }
+
+            foreach (var item in commentEntities)
+            {
+                var result = new CommentRowVM();
+                result.Text = item.Text;
+                result.UserId = item.UserId;
+                result.CommentDate = item.UpdateDate ?? item.CreateDate;
+                result.UserName = item.User.UserName;
+                Comments.Add(result);
+            }
+
             return Comments;
         }
 
-        public ServiceStatus AddComment(CommentVM model,int postId)
+        //Yorum ekleme
+        public ServiceStatus AddComment(CommentVM model, int postId)
         {
             var serviceStatus = new ServiceStatus();
             var httpUser = _httpContextAccessor.HttpContext.User;

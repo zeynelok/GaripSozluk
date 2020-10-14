@@ -22,10 +22,13 @@
                 <button class="btn btn-outline-success col-2 m-0 p-1 " type="submit">Ara</button>
                 <a class="btn btn-outline-success m-0 p-1 " href="/Home/DetailSearchPost">Ayrıntılı Ara</a>
             </form>
-         
+            <div class="col-1">
+                <a class="" href="/Post/GetRandomPost">Rastgele</a>
+            </div>
 
             @if (!Context.User.Identity.IsAuthenticated)
             {
+
                 <div class="col-1">
                     <a class="" href="/Authentication/Login">Giriş</a>
                 </div>

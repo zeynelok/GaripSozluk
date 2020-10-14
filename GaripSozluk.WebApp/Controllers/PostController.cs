@@ -57,7 +57,23 @@ namespace GaripSozluk.WebApp.Controllers
             ViewBag.Post = _postService.GetAllByCategoryId(model.PostCategoryId).ToList();
 
             return View(model);
-            //return Redirect(Url.Action("AddPost","Post"));
+        }
+
+        public IActionResult GetRandomPost()
+        {
+
+            var postId = _postService.GetRandomPost();
+
+            return Redirect(Url.Action("Index", "Home", new { postId = postId }));
+        }
+
+        [Authorize]
+        public IActionResult PostRating(int ratingPostId, string type)
+        {
+
+            _postService.PostRating(ratingPostId, type);
+
+            return Redirect(Url.Action("Index", "Home", new { postId = ratingPostId }));
         }
 
     }

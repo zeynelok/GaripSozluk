@@ -19,19 +19,24 @@ namespace GaripSozluk.Business.Services
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly SignInManager<User> _signInManager;
         private readonly ICommentService _commentService;
-        public PostService(IPostRepository postRepository, IHttpContextAccessor httpContextAccessor, SignInManager<User> signInManager, ICommentService commentService)
+        private readonly IBlockedUserService _blockedUserService;
+        private readonly IRatingRepository _ratingRepository;
+        public PostService(IPostRepository postRepository, IHttpContextAccessor httpContextAccessor, SignInManager<User> signInManager, ICommentService commentService, IBlockedUserService blockedUserService, IRatingRepository ratingRepository)
         {
             _postRepository = postRepository;
             _httpContextAccessor = httpContextAccessor;
             _signInManager = signInManager;
             _commentService = commentService;
+            _blockedUserService = blockedUserService;
+            _ratingRepository = ratingRepository;
         }
 
+        //Seçili kategoriye göre postları çekme
         public List<PostRowVM> GetAllByCategoryId(int selectedCategoryId)
         {
-            
             var list = new List<PostRowVM>();
-            _postRepository.GetAllByCategoryId(selectedCategoryId).ToList().ForEach(x =>
+            _postRepository.GetAllByCategoryId(selectedCategoryId).ToList()
+               .ForEach(x =>
             {
                 var item = new PostRowVM();
                 item.postId = x.Id;
@@ -41,31 +46,13 @@ namespace GaripSozluk.Business.Services
             });
             return list;
         }
-        //public List<CommentCountVM> GetAllByCategoryIdCommentCount(int selectedCategoryId)
-        //{
-        //    var comment = new List<CommentCountVM>();
-
-
-        //    var asd = _postRepository.GetAllByCategoryId(selectedCategoryId);
-        //    foreach (var item in asd)
-        //    {
-        //        comment.Add(new CommentCountVM()
-
-        //        {
-        //            commentCount = _commentService.GetAllByPostId(item.Id).Count(),
-        //            postId = item.Id,
-        //            Title = item.Title
-
-        //        });
-        //    }
-        //    return comment;
-        //}
 
         public Post Get(Expression<Func<Post, bool>> expression)
         {
             return _postRepository.Get(expression);
         }
 
+        // Post Ekleme
         public ServiceStatus AddPost(PostVM model)
         {
             var serviceStatus = new ServiceStatus();
@@ -74,13 +61,12 @@ namespace GaripSozluk.Business.Services
 
             var claims = int.Parse(httpUser.Claims.ToList().Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value);
 
-            //var user =_signInManager.UserManager.GetUserAsync(httpUser).Result;
             var post = new Post();
             post.Title = model.Title;
             post.CreateDate = DateTime.Now;
             post.UserId = claims;
             post.PostCategoryId = model.PostCategoryId;
-            post.ViewCount =1;
+            post.ViewCount = 1;
             _postRepository.Add(post);
 
             try
@@ -98,14 +84,13 @@ namespace GaripSozluk.Business.Services
 
         }
 
+        // Id ye göre 1 adet post ve onun yorumlarını çek ve sayfala
         public PostRowVM GetPostById(int id, int currentPage = 1)
         {
-            //var httpUser = _httpContextAccessor.HttpContext.User;
-            //var userId = int.Parse(httpUser.Claims.ToList().Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value);
-            //var blockedUsers=_
-            var postCount = _commentService.GetAllByPostId(id).Count();
-            var postSize = 8;
-            var pageCount = (postCount / postSize) + (postCount % postSize > 0 ? 1 : 0);
+
+            var commentCount = _commentService.GetAllByPostId(id).Count();
+            var commentSize = 8;
+            var pageCount = (commentCount / commentSize) + (commentCount % commentSize > 0 ? 1 : 0);
             var model = new PostRowVM();
             model.CurrentPage = currentPage;
             model.PageCount = pageCount;
@@ -121,19 +106,20 @@ namespace GaripSozluk.Business.Services
                 model.Title = post.Title;
                 model.postId = post.Id;
                 model.CreateDate = post.CreateDate;
-                model.Comments = _commentService.GetAllByPostId(post.Id).Skip((currentPage - 1) * postSize).Take(postSize).ToList();
+                model.LikeCount = _ratingRepository.GetAll(x => x.Isliked == true && x.PostId == post.Id).Count();
+                model.DislikeCount = _ratingRepository.GetAll(x => x.IsDisliked == true && x.PostId == post.Id).Count();
+                model.Comments = _commentService.GetAllByPostId(post.Id).Skip((currentPage - 1) * commentSize).Take(commentSize).ToList();
             }
 
             _postRepository.SaveChanges();
             return model;
         }
 
+        // Aramalar 
         public SearchVM SearchPost(SearchVM model)
-
         {
-            //model.posts = _postRepository.GetAll(x => x.Title.Contains(model.text)).ToList();
-
             var query = _postRepository.GetAll().Where(x => true);
+
             if (!string.IsNullOrEmpty(model.text))
             {
                 query = query.Where(x => x.Title.Contains(model.text));
@@ -152,15 +138,12 @@ namespace GaripSozluk.Business.Services
                 {
                     query = query.Where(x => (x.CreateDate >= model.startDate && x.CreateDate <= model.endDate));
                 }
-
             }
 
             if (model.ranking == 1)
             {
                 var Query = query.OrderByDescending(x => x.CreateDate);
-
                 model.posts = Query.ToList();
-
             }
             else
             {
@@ -171,44 +154,95 @@ namespace GaripSozluk.Business.Services
             return model;
         }
 
-        //public SearchVM DetailSearchPost(SearchVM model)
-        //{
-        //    var query = _postRepository.GetAll().Where(x => true);
-        //    if (!string.IsNullOrEmpty(model.text))
-        //    {
-        //        query = query.Where(x => x.Title.Contains(model.text));
-        //    }
-        //    if (model.startDate.HasValue || model.endDate.HasValue)
-        //    {
-        //        if (model.startDate.HasValue && model.endDate == null)
-        //        {
-        //            query = query.Where(x => x.CreateDate > model.startDate);
-        //        }
-        //        else if (model.startDate == null && model.endDate.HasValue)
-        //        {
-        //            query = query.Where(x => x.CreateDate > model.endDate);
-        //        }
-        //        else
-        //        {
-        //            query = query.Where(x => (x.CreateDate >= model.startDate && x.CreateDate <= model.endDate));
-        //        }
+        public int GetRandomPost()
+        {
+            List<int> postIds = new List<int>();
 
-        //    }
+            var posts = _postRepository.GetAll();
+            foreach (var item in posts)
+            {
+                postIds.Add(item.Id);
+            }
+            var postCount = posts.Count();
+            var rand = new Random();
 
-        //    if (model.ranking == 1)
-        //    {
-        //        var Query = query.OrderByDescending(x => x.CreateDate);
+            return postIds[rand.Next(0, postCount)];
 
-        //        model.posts = Query.ToList();
+        }
 
-        //    }
-        //    else
-        //    {
-        //        var Query = query.OrderBy(x => x.CreateDate);
-        //        model.posts = Query.ToList();
-        //    }
 
-        //    return model;
-        //}
+        public void PostRating(int ratingPostId, string type)
+        {
+            var httpUser = _httpContextAccessor.HttpContext.User;
+            var userId = int.Parse(httpUser.Claims.ToList().Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value);
+            var rating = _ratingRepository.Get(x => x.UserId == userId && x.PostId == ratingPostId);
+
+            if (type == "like") // type like mı
+            {
+                if (rating != null) //veritabanında kayıt var
+                {
+
+                    if (rating.Isliked != null && rating.Isliked == true)
+                    {
+                        _ratingRepository.Remove(rating);
+                    }
+                    else
+                    {
+                        rating.Isliked = true;
+                        rating.IsDisliked = null;
+                        rating.UpdateDate = DateTime.Now;
+                    }
+                }
+                else  //veritabanında kayıt yok
+                {
+                    rating = new Rating();
+                    rating.PostId = ratingPostId;
+                    rating.CreateDate = DateTime.Now;
+                    rating.UserId = userId;
+                    rating.Isliked = true;
+                    _ratingRepository.Add(rating);
+
+                }
+            }
+            else //type dislike 
+            {
+                if (rating != null) //veritabanında kayıt var
+                {
+
+                    if (rating.IsDisliked != null && rating.IsDisliked == true)
+                    {
+                        _ratingRepository.Remove(rating);
+                    }
+                    else
+                    {
+                        rating.Isliked = null;
+                        rating.IsDisliked = true;
+                        rating.UpdateDate = DateTime.Now;
+                    }
+                }
+                else  //veritabanında kayıt yok
+                {
+                    rating = new Rating();
+                    rating.PostId = ratingPostId;
+                    rating.CreateDate = DateTime.Now;
+                    rating.UserId = userId;
+                    rating.IsDisliked = true;
+                    _ratingRepository.Add(rating);
+
+                }
+            }
+
+            try
+            {
+                _ratingRepository.SaveChanges();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+
+        }
     }
 }

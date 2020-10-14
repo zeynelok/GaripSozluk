@@ -48,6 +48,8 @@ namespace GaripSozluk.WebApp
             services.AddScoped<IBlockedUserService, BlockedUserService>();
             services.AddScoped<IBlockedUserRepository, BlockedUserRepository>();
 
+            services.AddScoped<IRatingRepository, RatingRepository>();
+
 
             services.AddHttpContextAccessor();
 

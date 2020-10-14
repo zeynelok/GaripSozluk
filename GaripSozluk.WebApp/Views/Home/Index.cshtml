@@ -8,19 +8,51 @@
     {
         @*row border m-4 p-2*@
         <div class="row border m-4 p-2 col-12">
-            <div class="col-9">
-                <ul><li class="list-group"> <h3> <a>@Model.Title.ToString()</a>  </h3></li></ul>
-                <ul><li> <p>Görüntülenme Sayısı: @Model.ViewCount</p></li>  </ul>
-                <ul><li class="list-group"> <p>Yayınlanma tarihi: @Model.CreateDate</p></li>  </ul>
+
+            <div><h3> <a>@Model.Title.ToString()</a>  </h3></div>
+            <div class="col-12 row">
+                <div class="col-3">
+
+                    <small> Görüntülenme Sayısı: @Model.ViewCount</small>
+
+                </div>
+                <div class="col-4">
+
+                    <small> Yayınlanma tarihi: @Model.CreateDate</small>
+
+                </div>
+
+                <div class="col btn-group">
+
+                    <a class="btn btn-success d-flex justify-content-between align-items-center" asp-controller="Post"  asp-action="PostRating" asp-route-type="like" asp-route-ratingPostId="@Model.postId">
+                        <h6> <small>Beğendim</small></h6>
+                        <span class="badge badge-dark badge-pill">@Model.LikeCount</span>
+                    </a>
+
+
+                    <a class="btn btn-danger d-flex justify-content-between align-items-center" asp-controller="Post" asp-action="PostRating" asp-route-type="dislike" asp-route-ratingPostId="@Model.postId">
+                        <h6> <small>Beğenmedim</small></h6>
+                        <span class="badge badge-dark badge-pill">@Model.DislikeCount</span>
+                    </a>
+
+                </div>
+
             </div>
 
-            <div class="col-3">
-                <ul></ul>
-                <ul>
-                    <a asp-action="AddComment" asp-controller="Comment" asp-route-selectedCategoryId="@ViewBag.PostCategoryName.Id" asp-route-postId="@Model.postId">Yorum Ekle</a>
-                </ul>
 
-            </div>
+            @*<div class="col-9">
+                    <ul><li class="list-group"> <h3> <a>@Model.Title.ToString()</a>  </h3></li></ul>
+                    <ul><li> <p>Görüntülenme Sayısı: @Model.ViewCount</p></li>  </ul>
+                    <ul><li class="list-group"> <p>Yayınlanma tarihi: @Model.CreateDate</p></li>  </ul>
+                </div>
+
+                <div class="col-3">
+                    <ul></ul>
+                    <ul>
+                        <a asp-action="AddComment" asp-controller="Comment" asp-route-selectedCategoryId="@ViewBag.PostCategoryName.Id" asp-route-postId="@Model.postId">Yorum Ekle</a>
+                    </ul>
+
+                </div>*@
 
         </div>
 
