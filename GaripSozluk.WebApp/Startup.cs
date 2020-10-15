@@ -50,6 +50,7 @@ namespace GaripSozluk.WebApp
 
             services.AddScoped<IRatingRepository, RatingRepository>();
 
+            services.AddScoped<IApiService, ApiService>();
 
             services.AddHttpContextAccessor();
 
