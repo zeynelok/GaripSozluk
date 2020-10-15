@@ -66,7 +66,7 @@ namespace GaripSozluk.WebApp.Controllers
         [Authorize]
         public IActionResult PostRating(int ratingPostId, string type)
         {
-
+            //Todo: rating eklenip eklenmeme durumunun veritabanı tarafında başarılı olup olmadığını kontrol etmek isteyebilirsin. bunun için PostRating metodu void yerine başarılı veya başarısız diye bir yanıt dönebilir.
             _postService.PostRating(ratingPostId, type);
 
             return Redirect(Url.Action("Index", "Home", new { postId = ratingPostId }));

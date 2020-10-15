@@ -38,6 +38,7 @@ namespace GaripSozluk.Controllers
 
                 if (serviceStatus.Status)
                 {
+                    //Todo: Redirect metoduna alternatif olarak RedirectToAction("Login") de kullanabilirsin. Bu şekilde içerisinde bulunduğu controller'ın, login action'ını tetikleyecektir. 
                     return Redirect(Url.Action("Login", "Authentication"));
 
                 }

@@ -31,6 +31,7 @@ namespace GaripSozluk.Business.Services
 
             List<int> blockedUserIds = new List<int>();
             var Comments = new List<CommentRowVM>();
+            //Todo: Mesela _commentRepository.GetAll(x => x.PostId == postId).Include("User"); metodunda getall sonrasına include yazmak yerine include kısmını da getall metodu içerisinde yapman doğru olur. her yerde getall çağrısı yapacaksın ve muhtemelen çoğunda da bu yorumun kullanıcısına ulaşmak isteyeceksin. Bunu da ICommentRepository'e gidip örneğin GetAllWithUser metodu yazacaksın. içerisine de  GetAll(x => x.PostId == postId).Include("User"); kısmını uygulayacaksın. Altta da sadece getallwithuser çağrısı yaparsın. 
             var commentEntities = _commentRepository.GetAll(x => x.PostId == postId).Include("User");
 
             if (httpUser.Identity.IsAuthenticated == true)

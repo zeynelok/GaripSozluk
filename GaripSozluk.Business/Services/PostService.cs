@@ -113,7 +113,7 @@ namespace GaripSozluk.Business.Services
         {
             var query = _postRepository.GetAll();
 
-            if (!string.IsNullOrEmpty(model.text))
+            if (!string.IsNullOrEmpty(model.text)) //Todo: IsNullOrEmpty metoduna ek olarak IsNullOrWhiteSpace de kullanabilirsin. model.text değişkeni "   " gibi gelirse bu sorgunun içine girer. boş bir içerik sorgulanmış olur. ya yukarıda model.text değişkenini trim() yap ki boşluklar silinsin. 
             {
                 query = query.Where(x => x.Title.Contains(model.text));
             }
@@ -150,6 +150,8 @@ namespace GaripSozluk.Business.Services
         // Random post çekme
         public int GetRandomPost()
         {
+            //Todo: bu metotta tüm post idlerini çekmek için (select * from post)tüm postları çekmeye gerek yok. select id from post demek doğru olur o da şöyle: _postRepository.GetAll().Select(x => x.Id).ToList(); bu sanaa List<int> döner. burada hem idlere ulaşmış olursun, hem de bu listenin count sayısı ile altta atadığın postCount değişken değerine.
+
             List<int> postIds = new List<int>();
 
             var posts = _postRepository.GetAll();
@@ -171,6 +173,7 @@ namespace GaripSozluk.Business.Services
             var userId = int.Parse(httpUser.Claims.ToList().Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value);
             var rating = _ratingRepository.Get(x => x.UserId == userId && x.PostId == ratingPostId);
 
+            //Todo: STRİNG olarak type değişkeninde "like" iyi bir çözüm ama daha profesyonel kodlamak istiyorum dersen burada string ifade kullanmak yerine common katmanına bir enums klasörü açıp içinde like, unlike adında propertylere saahip bir enum yaratabilirsin. yarın bir gün sadece beğeni almış entryleri veya yorumları ön yüzde görüntülemek istersen direkt Where(x.Type == RatingEnum.Like) gibi bir kontrol ile kolayca halledersin. Kod içerisinde string ifade tutmayı mümkün oldukça azalt. 
             if (type == "like") // type like mı
             {
                 if (rating != null) //veritabanında kayıt var
