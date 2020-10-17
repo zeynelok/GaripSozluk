@@ -24,19 +24,20 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div>
-                    <input type="radio" name="Yazar" value="1">
-                    <label asp-for="option">Yazar</label>
-                </div>
-                <div>
-                    <input type="radio" name="Kitap" value="2">
-                    <label asp-for="option">Kitap</label>
-                </div>
-            </div>
 
+        <div class="col-md-6 row">
+            <div class="col-4"></div>
+            <div class="col">
+                <input type="radio" id="yazar" name="option" value="1">
+                <label asp-for="option">Yazar</label>
+            </div>
+            <div class="col">
+                <input type="radio" id="kitap" name="option" value="2">
+                <label asp-for="option">Kitap</label>
+            </div>
         </div>
+
+
     </form>
 </div>
 <br />
@@ -46,26 +47,71 @@
     @foreach (var item in Model.docs)
     {
         <div class="col-12 row">
-            <div class="col"><input type="checkbox" /></div>
-            <div class="col-11">
-                <a class="btn btn-light d-flex justify-content-between align-items-center" asp-route-selectedCategoryId="" asp-controller="home" asp-action="index" asp-route-postId="">
-
-                    @item.title
-                </a>
+            <div class="col" id="cbKutular">
+                <input type="checkbox" name="@item.title" value="@item.title" />
             </div>
 
+            <div class="col-11">
 
-            @*<ul>
-                    <li class="list-group">
-                        <h3>
+                @item.title/
+                @if (item.author_name != null)
+                {
+                    @item.author_name[0]
+                }
 
-                            <a class="btn btn-light d-flex justify-content-between align-items-center" asp-route-selectedCategoryId="" asp-controller="home" asp-action="index" asp-route-postId="">
+                / @item.first_publish_year
 
-                                @item.title
-                            </a>
-                        </h3>
-                    </li>
-                </ul>*@
+            </div>
         </div>
+        <br />
     }
+    @if (User.Identity.IsAuthenticated)
+    {
+        <input type="submit" value="Seçilen Kitapları Ekle" id="btnSecilenGor" />
+    }
+
+}
+
+@section scripts {
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $("#btnSecilenGor").click(function () {
+                var bookArray = [];
+                var books = "";
+                $('#cbKutular :checked').each(function () {
+                    var Secilenler = $(this).val();
+                    bookArray.push(Secilenler);
+
+                });
+
+                var formData = new FormData();
+
+                $.each(bookArray, function (i, item) {
+                    formData.append("books", item);
+                });
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Api/AddPostFromApi",
+                    processData: false,
+                    contentType: false,
+                    data: formData,
+                    dataType: "json",
+                    success: function (response) {
+                        if (response.status) {
+                            alert(response.message);
+                            window.location = response.x;
+                        }
+                        else {
+                            alert(response.message);
+                            window.location = response.x;
+                        }
+                      
+                    }
+                });
+            });
+        });
+
+    </script>
 }

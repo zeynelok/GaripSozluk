@@ -21,29 +21,98 @@
                     <small> Yayınlanma tarihi: @Model.CreateDate</small>
 
                 </div>
+
                 <div class="col-3">
-                    <ul></ul>
-                    <ul>
-                        <a asp-action="AddComment" asp-controller="Comment" asp-route-selectedCategoryId="@ViewBag.PostCategoryName.Id" asp-route-postId="@Model.postId">Yorum Ekle</a>
-                    </ul>
+
+
+                    <a asp-action="AddComment" asp-controller="Comment" asp-route-selectedCategoryId="@ViewBag.PostCategoryName.Id" asp-route-postId="@Model.postId">Yorum Ekle</a>
+
 
                 </div>
-                <div class="col btn-group">
+                <div class="">
+                    @if (Model.apiRowVM.docs != null)
+                    {
+                        <br />
+                        @if (Model.apiRowVM.docs.Length > 1)
+                        {
+                            <p>Son Beş Eseri:</p>
+                            @foreach (var item in Model.apiRowVM.docs)
+                            {
 
-                    <a class="btn btn-success d-flex justify-content-between align-items-center" asp-controller="Post" asp-action="PostRating" asp-route-type="like" asp-route-ratingPostId="@Model.postId">
-                        <h6> <small>Beğendim</small></h6>
-                        <span class="badge badge-dark badge-pill">@Model.LikeCount</span>
-                    </a>
+                                <ul>
+                                    <li>
+                                        <small> @item.title/</small>
+                                        <small> @item.first_publish_year</small>
+                                    </li>
+                                </ul>
 
 
-                    <a class="btn btn-danger d-flex justify-content-between align-items-center" asp-controller="Post" asp-action="PostRating" asp-route-type="dislike" asp-route-ratingPostId="@Model.postId">
-                        <h6> <small>Beğenmedim</small></h6>
-                        <span class="badge badge-dark badge-pill">@Model.DislikeCount</span>
-                    </a>
 
+                            }
+                        }
+                        else
+                        {
+                            if (@Model.apiRowVM.docs[0].author_name != null)
+                            {
+                                <div class="col">
+                                    <small>Yazar: @Model.apiRowVM.docs[0].author_name[0]</small>
+
+                                </div>
+
+                            }
+                            if (@Model.apiRowVM.docs[0].publisher != null)
+                            {
+                                <div class="col">
+                                    <small>Yayıncı: @Model.apiRowVM.docs[0].publisher[0]</small>
+
+                                </div>
+
+                            }
+                            if (@Model.apiRowVM.docs[0].first_publish_year != 0)
+                            {
+                                <div class="col">
+                                    <small>Yayınlanma Tarihi: @Model.apiRowVM.docs[0].first_publish_year</small>
+
+                                </div>
+
+                            }
+                            if (@Model.apiRowVM.docs[0].isbn != null)
+                            {
+                                <div class="col">
+                                    <small>ISBN: @Model.apiRowVM.docs[0].isbn[0]/</small>
+
+                                </div>
+
+
+                            }
+
+
+
+
+
+                        }
+
+                    }
                 </div>
 
             </div>
+            <br />
+            <br />
+            <div class="col btn-group">
+
+                <a class="btn btn-success d-flex justify-content-between align-items-center" asp-controller="Post" asp-action="PostRating" asp-route-type="like" asp-route-ratingPostId="@Model.postId">
+                    <h6> <small>Beğendim</small></h6>
+                    <span class="badge badge-dark badge-pill">@Model.LikeCount</span>
+                </a>
+
+
+                <a class="btn btn-danger d-flex justify-content-between align-items-center" asp-controller="Post" asp-action="PostRating" asp-route-type="dislike" asp-route-ratingPostId="@Model.postId">
+                    <h6> <small>Beğenmedim</small></h6>
+                    <span class="badge badge-dark badge-pill">@Model.DislikeCount</span>
+                </a>
+
+            </div>
+
 
 
         </div>
@@ -84,6 +153,7 @@
         <div class="row">
             <div asp-validation-summary="All" class="text-danger"></div>
         </div>
+
         if (Model.Comments != null)
         {
             @foreach (var item in Model.Comments)

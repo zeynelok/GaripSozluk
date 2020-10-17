@@ -19,12 +19,16 @@ namespace GaripSozluk.Business.Services
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ICommentService _commentService;
         private readonly IRatingRepository _ratingRepository;
-        public PostService(IPostRepository postRepository, IHttpContextAccessor httpContextAccessor, SignInManager<User> signInManager, ICommentService commentService, IBlockedUserService blockedUserService, IRatingRepository ratingRepository)
+        private readonly IPostCategoryService _postCategoryService;
+        private readonly IApiService _apiService;
+        public PostService(IPostRepository postRepository, IHttpContextAccessor httpContextAccessor, SignInManager<User> signInManager, ICommentService commentService, IBlockedUserService blockedUserService, IRatingRepository ratingRepository, IPostCategoryService postCategoryService, IApiService apiService)
         {
             _postRepository = postRepository;
             _httpContextAccessor = httpContextAccessor;
             _commentService = commentService;
             _ratingRepository = ratingRepository;
+            _postCategoryService = postCategoryService;
+            _apiService = apiService;
         }
 
         //Seçili kategoriye göre postları çekme
@@ -53,32 +57,36 @@ namespace GaripSozluk.Business.Services
             var httpUser = _httpContextAccessor.HttpContext.User;
 
             var claims = int.Parse(httpUser.Claims.ToList().Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value);
-
-            var post = new Post();
-            post.Title = model.Title;
-            post.CreateDate = DateTime.Now;
-            post.UserId = claims;
-            post.PostCategoryId = model.PostCategoryId;
-            post.ViewCount = 1;
-            _postRepository.Add(post);
-
-            try
+            var isTherePost = _postRepository.Get(x => x.Title == model.Title);
+            if (isTherePost==null)
             {
-                _postRepository.SaveChanges();
-                serviceStatus.Status = true;
-                return serviceStatus;
+                var post = new Post();
+                post.Title = model.Title;
+                post.CreateDate = DateTime.Now;
+                post.UserId = claims;
+                post.PostCategoryId = model.PostCategoryId;
+                post.ViewCount = 1;
+                _postRepository.Add(post);
 
+                try
+                {
+                    _postRepository.SaveChanges();
+                    serviceStatus.Status = true;
+                    return serviceStatus;
+
+                }
+                catch (Exception ex)
+                {
+                    var errorMessage = ex.Message;
+                    throw;
+                }
             }
-            catch (Exception ex)
-            {
-                var errorMessage = ex.Message;
-                throw;
-            }
+            return serviceStatus;
 
         }
 
         // Id ye göre 1 adet post ve onun yorumlarını çek ve sayfala
-        public PostRowVM GetPostById(int id, int currentPage = 1)
+        public PostRowVM GetPostById(string searchText, int id, int currentPage = 1)
         {
 
             var commentCount = _commentService.GetAllByPostId(id).Count();
@@ -102,6 +110,7 @@ namespace GaripSozluk.Business.Services
                 model.LikeCount = _ratingRepository.GetAll(x => x.Isliked == true && x.PostId == post.Id).Count();
                 model.DislikeCount = _ratingRepository.GetAll(x => x.IsDisliked == true && x.PostId == post.Id).Count();
                 model.Comments = _commentService.GetAllByPostId(post.Id).Skip((currentPage - 1) * commentSize).Take(commentSize).ToList();
+                model.apiRowVM = _apiService.GetApi(searchText);
             }
 
             _postRepository.SaveChanges();
@@ -239,6 +248,50 @@ namespace GaripSozluk.Business.Services
                 throw;
             }
 
+
+        }
+
+        public ServiceStatus AddPostFromApi(string[] books)
+        {
+            var serviceStatus = new ServiceStatus();
+            var httpUser = _httpContextAccessor.HttpContext.User;
+            var claims = int.Parse(httpUser.Claims.ToList().Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value);
+
+            var postCategory = _postCategoryService.GetPostCategory("Kitap");
+            if (postCategory == null)
+            {
+                serviceStatus = _postCategoryService.AddPostCategory("Kitap");
+                postCategory = _postCategoryService.GetPostCategory("Kitap");
+            }
+
+
+            foreach (var item in books)
+            {
+
+                var isTherePost = _postRepository.Get(x => x.Title == (item + "(Kitap)"));
+                if (isTherePost == null)
+                {
+                    var post = new Post();
+                    post.Title = item + "(Kitap)";
+                    post.CreateDate = DateTime.Now;
+                    post.UserId = claims;
+                    post.PostCategoryId = postCategory.Id;
+                    post.ViewCount = 1;
+                    _postRepository.Add(post);
+                    try
+                    {
+                        _postRepository.SaveChanges();
+                        serviceStatus.Status = true;
+                    }
+                    catch (Exception)
+                    {
+
+                        throw;
+                    }
+                }
+            }
+
+            return serviceStatus;
 
         }
     }

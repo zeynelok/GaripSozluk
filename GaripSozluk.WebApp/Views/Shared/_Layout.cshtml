@@ -17,7 +17,7 @@
                 <a href="/Home/Index"> <img src="/logo.png" width="50" height="30" class="d-inline-block align-top" alt=""></a>
             </div>
             <div class="col-1"></div>
-            <form class="col-5" asp-controller="Home" asp-action="SearchPost" method="post">
+            <form class="col-4" asp-controller="Home" asp-action="SearchPost" method="post">
                 <input class="col-6" type="search" name="text" placeholder="Arama..." />
                 <button class="btn btn-outline-success col-2 m-0 p-1 " type="submit">Ara</button>
                 <a class="btn btn-outline-success m-0 p-1 " href="/Home/DetailSearchPost">Ayrıntılı Ara</a>
@@ -53,6 +53,9 @@
                     <a class="" href="/Authentication/LogOut">Çıkış</a>
                 </div>
             }
+            <div class="col-1">
+                <a class="" href="/Api/GetApi">API'de ara</a>
+            </div>
 
             <div class="row col-12">
                 @if (ViewBag.PostCategory != null)
@@ -80,7 +83,7 @@
                 @foreach (var item in ViewBag.Post)
                 {
                     <ul class="col-12">
-                        <a class="btn btn-light d-flex justify-content-between align-items-center" asp-controller="Home" asp-action="Index" asp-route-selectedCategoryId="@ViewBag.PostCategoryName.Id" asp-route-postId="@item.postId">
+                        <a class="btn btn-light d-flex justify-content-between align-items-center" asp-route-searchText="@item.Title" asp-controller="Home" asp-action="Index" asp-route-selectedCategoryId="@ViewBag.PostCategoryName.Id" asp-route-postId="@item.postId">
                             @item.Title
                             <span class="badge badge-primary badge-pill">@item.CommentCount</span> 
                          </a>

@@ -11,12 +11,12 @@ namespace GaripSozluk.Business.Interfaces
     public interface IPostService
     {
         List<PostRowVM> GetAllByCategoryId(int selectedCategoryId);
-        PostRowVM GetPostById(int id, int currentPage);
+        PostRowVM GetPostById(string searchText,int id, int currentPage);
         SearchVM SearchPost(SearchVM model);
         int GetRandomPost();
         ServiceStatus AddPost(PostVM model);
         void PostRating(int ratingPostId, string type);
 
-
+        ServiceStatus AddPostFromApi(string[] books);
     }
 }

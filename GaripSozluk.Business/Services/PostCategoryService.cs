@@ -20,15 +20,40 @@ namespace GaripSozluk.Business.Services
         private readonly IPostCategoryRepository _postCategoryRepository;
         public PostCategoryService(IPostCategoryRepository postCategoryRepository)
         {
-            _postCategoryRepository = postCategoryRepository;       
+            _postCategoryRepository = postCategoryRepository;
         }
+
+        public ServiceStatus AddPostCategory(string categoryName)
+        {
+            var serviceStatus = new ServiceStatus();
+            var postCategory = new PostCategory();
+            postCategory.Title = categoryName;
+            postCategory.CreateDate = DateTime.Now;
+            _postCategoryRepository.Add(postCategory);
+            try
+            {
+                _postCategoryRepository.SaveChanges();
+                serviceStatus.Status = true;
+                return serviceStatus;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+
 
         //seçilen categoriyi veritabanından alıyoruz postların üstünde yazmak için
         public PostCategory GetPostCategory(int selectedCategoryId)
         {
-            return _postCategoryRepository.Get(x=>x.Id==selectedCategoryId);
+            return _postCategoryRepository.Get(x => x.Id == selectedCategoryId);
         }
-
+        public PostCategory GetPostCategory(string categoryName)
+        {
+            return _postCategoryRepository.Get(x => x.Title == categoryName);
+        }
 
         //kategori listesi alıyoruz selectbox için 
         public List<SelectListItem> PostCategoryList(int selectedCategoryId)
@@ -50,6 +75,7 @@ namespace GaripSozluk.Business.Services
             }
             return list;
         }
+
 
     }
 }

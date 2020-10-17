@@ -7,6 +7,6 @@ namespace GaripSozluk.Business.Interfaces
 {
    public interface IApiService
     {
-        ApiRowVM GetApi(string searchText,int option); 
+        ApiRowVM GetApi(string searchText,int? option=null); 
     }
 }
