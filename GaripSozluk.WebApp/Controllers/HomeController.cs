@@ -19,13 +19,15 @@ namespace GaripSozluk.WebApp.Controllers
         private readonly IPostCategoryService _postCategoryService;
         private readonly ICommentService _commentService;
         private readonly IApiService _apiService;
-        public HomeController(ILogger<HomeController> logger, IPostService postService, IPostCategoryService postCategoryService, ICommentService commentService,IApiService apiService)
+        private readonly ILogService _logService;
+        public HomeController(ILogger<HomeController> logger, IPostService postService, IPostCategoryService postCategoryService, ICommentService commentService,IApiService apiService,ILogService logService)
         {
             _logger = logger;
             _postService = postService;
             _postCategoryService = postCategoryService;
             _commentService = commentService;
             _apiService = apiService;
+            _logService = logService;
         }
 
         // Ana Sayfa
@@ -79,6 +81,22 @@ namespace GaripSozluk.WebApp.Controllers
 
             return View();
         }
+
+        //Logları Çekme
+        public IActionResult GetLog()
+        {
+           var getLog= _logService.GetAllLogRowVM(null);
+            return View(getLog);
+        }
+
+        //Filtreyle beraber logları çekme
+        [HttpPost]
+        public IActionResult GetLog(LogRowVM logRowVM)
+        {
+            var getLog = _logService.GetAllLogRowVM(logRowVM);
+            return View(getLog);
+        }
+
 
         public IActionResult Privacy()
         {

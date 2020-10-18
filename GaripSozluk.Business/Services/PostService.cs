@@ -58,7 +58,7 @@ namespace GaripSozluk.Business.Services
 
             var claims = int.Parse(httpUser.Claims.ToList().Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value);
             var isTherePost = _postRepository.Get(x => x.Title == model.Title);
-            if (isTherePost==null)
+            if (isTherePost == null)
             {
                 var post = new Post();
                 post.Title = model.Title;
@@ -130,11 +130,11 @@ namespace GaripSozluk.Business.Services
             {
                 if (model.startDate.HasValue && model.endDate == null)
                 {
-                    query = query.Where(x => x.CreateDate > model.startDate);
+                    query = query.Where(x => x.CreateDate >= model.startDate);
                 }
                 else if (model.startDate == null && model.endDate.HasValue)
                 {
-                    query = query.Where(x => x.CreateDate > model.endDate);
+                    query = query.Where(x => x.CreateDate <= model.endDate);
                 }
                 else
                 {
@@ -251,6 +251,8 @@ namespace GaripSozluk.Business.Services
 
         }
 
+
+        // API den gelen verilerden seçilenlerin eklenmesi
         public ServiceStatus AddPostFromApi(string[] books)
         {
             var serviceStatus = new ServiceStatus();

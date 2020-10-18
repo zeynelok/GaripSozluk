@@ -5,7 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] GaripSozluk</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
+
     <link rel="stylesheet" href="~/css/site.css" />
+
+    @*<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4-4.1.1/jq-3.3.1/dt-1.10.22/b-1.6.5/b-colvis-1.6.5/datatables.min.css" />*@
+
+
+
 </head>
 
 <body>
@@ -16,7 +23,6 @@
             <div class="col-1">
                 <a href="/Home/Index"> <img src="/logo.png" width="50" height="30" class="d-inline-block align-top" alt=""></a>
             </div>
-            <div class="col-1"></div>
             <form class="col-4" asp-controller="Home" asp-action="SearchPost" method="post">
                 <input class="col-6" type="search" name="text" placeholder="Arama..." />
                 <button class="btn btn-outline-success col-2 m-0 p-1 " type="submit">Ara</button>
@@ -52,6 +58,9 @@
                 <div class="col-1">
                     <a class="" href="/Authentication/LogOut">Çıkış</a>
                 </div>
+                <div class="col-1">
+                    <a class="" href="/Home/GetLog">Log</a>
+                </div>
             }
             <div class="col-1">
                 <a class="" href="/Api/GetApi">API'de ara</a>
@@ -85,8 +94,8 @@
                     <ul class="col-12">
                         <a class="btn btn-light d-flex justify-content-between align-items-center" asp-route-searchText="@item.Title" asp-controller="Home" asp-action="Index" asp-route-selectedCategoryId="@ViewBag.PostCategoryName.Id" asp-route-postId="@item.postId">
                             @item.Title
-                            <span class="badge badge-primary badge-pill">@item.CommentCount</span> 
-                         </a>
+                            <span class="badge badge-primary badge-pill">@item.CommentCount</span>
+                        </a>
                     </ul>
                 }
             }
@@ -126,8 +135,11 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
+    @*<script type="text/javascript" src="https://cdn.datatables.net/v/bs4-4.1.1/jq-3.3.1/dt-1.10.22/b-1.6.5/b-colvis-1.6.5/datatables.min.js"></script>*@
 
 
     @RenderSection("Scripts", required: false)

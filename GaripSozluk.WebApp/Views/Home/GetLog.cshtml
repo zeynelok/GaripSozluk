@@ -1,0 +1,113 @@
+﻿@model LogRowVM
+@{
+    ViewData["Title"] = "GetLog";
+}
+
+
+
+
+<h1>GetLog</h1>
+<table id="tableLogId" class="cell-border compact stripe">
+    <thead>
+        <tr>
+            <th>TraceIdentifier</th>
+            <th>ResponseStatusCode</th>
+            <th>RequestMethod</th>
+            <th>RequestPath</th>
+            <th>UserAgent</th>
+            <th>IPAddress</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            @foreach (var item in Model.logVMs)
+            {
+                <tr>
+                    <td>@item.TraceIdentifier</td>
+                    <td>@item.ResponseStatusCode</td>
+                    <td>@item.RequestMethod</td>
+                    <td>@item.RequestPath</td>
+                    <td>@item.UserAgent</td>
+                    <td>@item.IPAddress</td>
+
+                </tr>
+            }
+        }
+
+    </tbody>
+</table>
+<br />
+<div class="row  m-2">
+    <form asp-controller="Home" asp-action="GetLog" method="Post" class="col-md-12" id="filterForm">
+        <div class="row">
+            <div asp-validation-summary="All" class="text-danger"></div>
+        </div>
+        <div class="row col-12">
+            <div class="col-5">
+                <div class="form-group form-row">
+                    <label class="control-label col-md-4" asp-for="startDate"></label>
+                    <input class="form-control col-md-8" asp-for="startDate" />
+                </div>
+            </div>
+
+            <div class="col-5">
+                <div class="form-group form-row">
+                    <label class="control-label col-md-4" asp-for="endDate"></label>
+                    <input class="form-control col-md-8" asp-for="endDate" />
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="col-md-12">
+                    <button class="btn btn-outline-secondary float-right" type="submit" id="filterFormSubmit">Filtrele</button>
+                </div>
+            </div>
+
+        </div>
+
+
+    </form>
+</div>
+<br />
+@if (Model.logFilterVMs != null)
+{
+    <table id="tableLogFilterId" class="cell-border compact stripe">
+        <thead>
+            <tr>
+                <th>RequestPath</th>
+                <th>Görüntülenme sayısı</th>
+
+            </tr>
+        </thead>
+        <tbody>
+
+
+            @foreach (var item in Model.logFilterVMs)
+            {
+                <tr>
+                    <td>@item.RequestPath</td>
+                    <td>@item.viewCount</td>
+                </tr>
+            }
+
+
+        </tbody>
+    </table>
+}
+
+@section scripts {
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#tableLogId').DataTable();
+        });
+        $(document).ready(function () {
+            $('#tableLogFilterId').DataTable({
+
+                "order": [1, "desc"]
+            });
+        });
+
+    </script>
+
+}

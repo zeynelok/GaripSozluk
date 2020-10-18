@@ -12,6 +12,7 @@ namespace GaripSozluk.Business.Services
 {
     public class ApiService : IApiService
     {
+        // API'ye sorgu atıp veri çekme 
         public ApiRowVM GetApi(string searchText, int? option = null)
         {
             var asd = new ApiRowVM();

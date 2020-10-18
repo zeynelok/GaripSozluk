@@ -15,7 +15,7 @@ namespace GaripSozluk.Data
         {
 
         }
-        public GaripSozlukDbContext(DbContextOptions options) : base(options)
+        public GaripSozlukDbContext(DbContextOptions<GaripSozlukDbContext> options) : base(options)
         {
 
         }

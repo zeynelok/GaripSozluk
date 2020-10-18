@@ -16,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MovieStore.WebApp.Extensions;
 
 namespace GaripSozluk.WebApp
 {
@@ -34,6 +35,10 @@ namespace GaripSozluk.WebApp
             var connectionString = Configuration.GetConnectionString("AppDatabase");
             services.AddDbContext<GaripSozlukDbContext>(options => options.UseSqlServer(connectionString));
 
+            var connectionStringPostgre = Configuration.GetConnectionString("AppDatabasePostgre");
+            services.AddDbContext<GaripSozlukDbContextLog>(options => options.UseNpgsql(connectionStringPostgre));
+
+
             services.AddScoped<IPostService, PostService>();
             services.AddScoped<IPostRepository, PostRepository>();
 
@@ -51,6 +56,9 @@ namespace GaripSozluk.WebApp
             services.AddScoped<IRatingRepository, RatingRepository>();
 
             services.AddScoped<IApiService, ApiService>();
+
+            services.AddScoped<ILogService, LogService>();
+            services.AddScoped<ILogRepository, LogRepository>();
 
             services.AddHttpContextAccessor();
 
@@ -92,6 +100,7 @@ namespace GaripSozluk.WebApp
 
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseMiddleware<LogMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {
