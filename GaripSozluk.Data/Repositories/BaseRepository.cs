@@ -11,9 +11,9 @@ namespace GaripSozluk.Data.Repositories
 {
     public abstract class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : BaseEntity
     {
-        private readonly GaripSozlukDbContext _context;
+        private readonly DbContext _context;
         private readonly DbSet<TEntity> _dbSet;
-        public BaseRepository(GaripSozlukDbContext context)
+        public BaseRepository(DbContext context)
         {
             _context = context;
             _dbSet = _context.Set < TEntity>();

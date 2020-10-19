@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MovieStore.WebApp.Extensions
+namespace GaripSozluk.Business.Middleware
 {
     public class LogMiddleware
     {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GaripSozluk.Business.Interfaces;
+using GaripSozluk.Business.Middleware;
 using GaripSozluk.Business.Services;
 using GaripSozluk.Data;
 using GaripSozluk.Data.Domain;
@@ -16,7 +17,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using MovieStore.WebApp.Extensions;
 
 namespace GaripSozluk.WebApp
 {

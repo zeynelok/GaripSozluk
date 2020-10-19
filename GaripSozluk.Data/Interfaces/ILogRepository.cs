@@ -7,13 +7,8 @@ using System.Text;
 
 namespace GaripSozluk.Data.Interfaces
 {
-   public interface ILogRepository
+    public interface ILogRepository : IBaseRepository<Log>
     {
-        Log Add(Log entity);
-        IQueryable<Log> GetAll();
-        IQueryable<Log> GetAll(Expression<Func<Log, bool>> expression);
-        Log Get(Expression<Func<Log, bool>> expression);
-        int SaveChanges();
 
     }
 }
