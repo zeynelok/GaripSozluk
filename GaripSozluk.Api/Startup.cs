@@ -61,19 +61,6 @@ namespace GaripSozluk.Api
             });
             services.AddHangfireServer();
 
-            //services.AddHangfire(configuration => configuration
-            //        .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
-            //        .UseSimpleAssemblyNameTypeSerializer()
-            //        .UseRecommendedSerializerSettings()
-            //        .UseSqlServerStorage(Configuration.GetConnectionString("AppDatabaseHangfire"), new SqlServerStorageOptions
-            //        {
-            //            CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
-            //            SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
-            //            QueuePollInterval = TimeSpan.Zero,
-            //            UseRecommendedIsolationLevel = true,
-            //            DisableGlobalLocks = true
-            //        }));
-
             services.AddScoped<IPostService, PostService>();
             services.AddScoped<IPostRepository, PostRepository>();
 

@@ -90,7 +90,7 @@ namespace GaripSozluk.Business.Services
         }
 
 
-        // verilen tarihteki log kayıtlarının çekilmesi
+        // verilen tarihteki günlük log kayıtlarının çekilmesi
         public List<LogVM> GetLogComments(DateTime dateTime)
         {
           var logVMs = new List<LogVM>();
@@ -110,7 +110,7 @@ namespace GaripSozluk.Business.Services
             return logVMs;
         }
 
-        // verilen tarihteki log kayıtlarının çekilmesi gruplanması ve sıralanması
+        // verilen tarihteki günlük log kayıtlarının çekilmesi gruplanması ve sıralanması
         public List<LogFilterVM> GetLogCommentsFilter(DateTime dateTime)
         {
             var logFilterVMs = new List<LogFilterVM>();
