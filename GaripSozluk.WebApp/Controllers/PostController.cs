@@ -37,6 +37,7 @@ namespace GaripSozluk.WebApp.Controllers
         [HttpPost]
         public IActionResult AddPost(PostVM model)
         {
+          
             if (ModelState.IsValid)
             {
                 var serviceStatus = _postService.AddPost(model);

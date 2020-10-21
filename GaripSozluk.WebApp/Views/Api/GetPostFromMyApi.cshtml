@@ -1,0 +1,49 @@
+﻿@model List<GaripSozluk.Api.Models.PostApiVM>
+@{
+    ViewData["Title"] = "GetPostFromMyApi";
+}
+
+<h1>Yerli Apiden Gelen Post Listesi</h1>
+<br />
+
+<table id="tableApiId" class="cell-border compact stripe">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Adı</th>
+            <th>Görüntülenme Sayısı</th>
+            <th>Yazarı</th>
+            <th>Kategori Id</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Title</td>
+                    <td>@item.viewCount</td>
+                    <td>@item.UserName</td>
+                    <td>@item.categoryId</td>
+
+                </tr>
+            }
+        }
+
+    </tbody>
+</table>
+
+
+@section scripts {
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#tableApiId').DataTable();
+        });
+       
+
+    </script>
+
+}

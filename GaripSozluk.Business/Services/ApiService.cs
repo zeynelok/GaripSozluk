@@ -1,9 +1,12 @@
-﻿using GaripSozluk.Business.Interfaces;
+﻿using GaripSozluk.Api.Models;
+using GaripSozluk.Business.Interfaces;
 using GaripSozluk.Common.ViewModels;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Policy;
 using System.Text;
@@ -12,14 +15,21 @@ namespace GaripSozluk.Business.Services
 {
     public class ApiService : IApiService
     {
+        public IConfiguration Configuration { get; }
+        public ApiService(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
+
+
         // API'ye sorgu atıp veri çekme 
         public ApiRowVM GetApi(string searchText, int? option = null)
         {
             var asd = new ApiRowVM();
             if (searchText != "")
             {
-                //bool isTherebook = false;
-                //var index = searchText.IndexOf("(Kitap)");
+
                 var index = -1;
                 if (searchText.EndsWith("(Yazar)"))
                 {
@@ -62,17 +72,34 @@ namespace GaripSozluk.Business.Services
                     {
                         var content = JsonConvert.DeserializeObject<ApiRowVM>(response.Content);
                         content.docs = content.docs.GroupBy(x => new { x.title }).Select(a => a.First()).OrderByDescending(x => x.first_publish_year).ToArray();
-                        if (index>-1)
+                        if (index > -1)
                         {
                             content.docs = content.docs.Take(1).ToArray();
                         }
-                     
+
                         return content;
                     }
                 }
             }
 
             return asd;
+        }
+
+        // Post Apisinden veri çekme
+        public List<PostApiVM> GetPostFromMyApi()
+        {
+            var posts = new List<PostApiVM>();
+            var path = Configuration.GetSection("ConnectionStrings:ApiPath").Value;
+            var client = new RestClient(Path.Combine(path, "Post"));
+            var request = new RestRequest(Method.GET);
+            IRestResponse response = client.ExecuteAsync(request).Result;
+            if (response.IsSuccessful)
+            {
+                var content = JsonConvert.DeserializeObject<List<PostApiVM>>(response.Content);
+
+                return content;
+            }
+            return posts;
         }
     }
 }

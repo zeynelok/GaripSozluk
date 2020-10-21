@@ -9,7 +9,6 @@
 
     <link rel="stylesheet" href="~/css/site.css" />
 
-    @*<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4-4.1.1/jq-3.3.1/dt-1.10.22/b-1.6.5/b-colvis-1.6.5/datatables.min.css" />*@
 
 
 
@@ -19,7 +18,6 @@
 
     <nav class="navbar shadow bg-light navbar-light sticky-top rounded">
         <div class="row col-12">
-            <div class="col-1"></div>
             <div class="col-1">
                 <a href="/Home/Index"> <img src="/logo.png" width="50" height="30" class="d-inline-block align-top" alt=""></a>
             </div>
@@ -60,6 +58,9 @@
                 </div>
                 <div class="col-1">
                     <a class="" href="/Home/GetLog">Log</a>
+                </div>
+                <div class="col-1">
+                    <a class="" href="/Api/GetPostFromMyApi">Yerli API</a>
                 </div>
             }
             <div class="col-1">
@@ -138,9 +139,6 @@
 
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-
-    @*<script type="text/javascript" src="https://cdn.datatables.net/v/bs4-4.1.1/jq-3.3.1/dt-1.10.22/b-1.6.5/b-colvis-1.6.5/datatables.min.js"></script>*@
-
 
     @RenderSection("Scripts", required: false)
 </body>

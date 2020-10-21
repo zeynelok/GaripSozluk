@@ -15,7 +15,5 @@ namespace GaripSozluk.Business.Interfaces
         PostCategory GetPostCategory(int selectedCategoryId);
         ServiceStatus AddPostCategory(string categoryName);
         PostCategory GetPostCategory(string categoryName);
-
-
     }
 }

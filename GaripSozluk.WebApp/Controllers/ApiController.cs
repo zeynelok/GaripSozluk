@@ -20,6 +20,7 @@ namespace GaripSozluk.WebApp.Controllers
             _postService = postService;
         }
 
+        // Kitap Apisinden kitap çekme
         public IActionResult GetApi()
         {
             return View();
@@ -38,6 +39,8 @@ namespace GaripSozluk.WebApp.Controllers
             return View();
         }
 
+
+        // Kitap Apisinden gelenlerin seçilerek eklenmesi
         [Authorize]
         [HttpPost]
         public IActionResult AddPostFromApi(string[] books)
@@ -49,6 +52,14 @@ namespace GaripSozluk.WebApp.Controllers
             }
          
             return Json(new {x="/Api/GetApi",message="Ekleme başarısız.",status=false});
+        }
+
+
+        // Post Apisinden post listesi çekme
+        public IActionResult GetPostFromMyApi()
+        {
+            var posts = _apiService.GetPostFromMyApi();
+            return View(posts);
         }
     }
 }

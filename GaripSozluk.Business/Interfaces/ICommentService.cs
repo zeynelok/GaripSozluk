@@ -12,6 +12,8 @@ namespace GaripSozluk.Business.Interfaces
         List<CommentRowVM> GetAllByPostId(int postId);
 
         ServiceStatus AddComment(CommentVM model,int postId);
+        ServiceStatus AddLogComment(int postId);
+        ServiceStatus AddLogCommentFilter(int postId);
 
     }
 }

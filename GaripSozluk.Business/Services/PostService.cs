@@ -1,9 +1,11 @@
-﻿using GaripSozluk.Business.Interfaces;
+﻿using GaripSozluk.Api.Models;
+using GaripSozluk.Business.Interfaces;
 using GaripSozluk.Common.ViewModels;
 using GaripSozluk.Data.Domain;
 using GaripSozluk.Data.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +23,7 @@ namespace GaripSozluk.Business.Services
         private readonly IRatingRepository _ratingRepository;
         private readonly IPostCategoryService _postCategoryService;
         private readonly IApiService _apiService;
-        public PostService(IPostRepository postRepository, IHttpContextAccessor httpContextAccessor, SignInManager<User> signInManager, ICommentService commentService, IBlockedUserService blockedUserService, IRatingRepository ratingRepository, IPostCategoryService postCategoryService, IApiService apiService)
+        public PostService(IPostRepository postRepository, IHttpContextAccessor httpContextAccessor, ICommentService commentService, IRatingRepository ratingRepository, IPostCategoryService postCategoryService, IApiService apiService)
         {
             _postRepository = postRepository;
             _httpContextAccessor = httpContextAccessor;
@@ -296,5 +298,91 @@ namespace GaripSozluk.Business.Services
             return serviceStatus;
 
         }
+
+        public List<PostApiVM> GetAll()
+        {
+
+            var posts = _postRepository.GetAll().Include("User").Include("PostCategory");
+            var postApi = new List<PostApiVM>();
+            foreach (var item in posts)
+            {
+                var post = new PostApiVM();
+                post.categoryId = item.PostCategoryId;
+                post.Id = item.Id;
+                post.Title = item.Title;
+                post.UserName = item.User.UserName;
+                post.viewCount = item.ViewCount;
+                postApi.Add(post);
+            }
+            return postApi;
+        }
+        public Post GetPost(string title)
+        {
+            return _postRepository.Get(x => x.Title == title);
+        }
+
+        // Bir gün öncenin tarihiyle bir adet post oluşturma
+        public void AddLogPost()
+        {
+            var title = DateTime.Now.AddDays(-1).ToString("dd'/'MM'/'yyyy") + " günü loglistesi(log)";
+            var isTherePost = _postRepository.Get(x => x.Title == title);
+            if (isTherePost == null)
+            {
+                var post = new Post();
+                post.Title = (title);
+                post.CreateDate = DateTime.Now;
+                post.UserId = 9;
+                post.PostCategoryId = 10;
+                post.ViewCount = 1;
+                _postRepository.Add(post);
+
+
+                try
+                {
+                    _postRepository.SaveChanges();
+                    var postId = GetPost(title).Id;
+                    _commentService.AddLogComment(postId);
+
+                }
+                catch (Exception ex)
+                {
+                    var errorMessage = ex.Message;
+                    throw;
+                }
+            }
+        }
+
+        //Bir gün öncenin en fazla istek yapılan adresleri isimli post oluşturma
+        public void AddLogPostFilter()
+        {
+            var title = DateTime.Now.AddDays(-1).ToString("dd'/'MM'/'yyyy") + " gününde en fazla istek yapılan adresler(log-request)";
+            var isTherePost = _postRepository.Get(x => x.Title == title);
+            if (isTherePost == null)
+            {
+                var post = new Post();
+                post.Title = (title);
+                post.CreateDate = DateTime.Now;
+                post.UserId = 9;
+                post.PostCategoryId = 10;
+                post.ViewCount = 1;
+                _postRepository.Add(post);
+
+
+                try
+                {
+                    _postRepository.SaveChanges();
+                    var postId = GetPost(title).Id;
+                    _commentService.AddLogCommentFilter(postId);
+
+                }
+                catch (Exception ex)
+                {
+                    var errorMessage = ex.Message;
+                    throw;
+                }
+            }
+        }
+
+
     }
 }

@@ -17,11 +17,15 @@ namespace GaripSozluk.Business.Services
         private readonly ICommentRepository _commentRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IBlockedUserService _blockedUserService;
-        public CommentService(ICommentRepository commentRepository, IHttpContextAccessor httpContextAccessor, IBlockedUserService blockedUserService)
+        //private readonly IPostService _postService;
+        private readonly ILogService _logService;
+        public CommentService(ICommentRepository commentRepository, IHttpContextAccessor httpContextAccessor, IBlockedUserService blockedUserService, /*IPostService postService,*/ ILogService logService)
         {
             _commentRepository = commentRepository;
             _httpContextAccessor = httpContextAccessor;
             _blockedUserService = blockedUserService;
+            //_postService = postService;
+            _logService = logService;
         }
 
         // post Id ye göre tüm yorumları getirme
@@ -83,6 +87,68 @@ namespace GaripSozluk.Business.Services
             }
         }
 
+        // verilen tarihte oluşturulan log kayıtlarının yorum olarak eklenmesi
+        public ServiceStatus AddLogComment(int postId)
+        {
+            var serviceStatus = new ServiceStatus();
+            //var title= DateTime.Now.AddDays(-1).ToShortDateString()+" günü loglistesi(log)";
+            var date = DateTime.Now.Date.AddDays(-1);
+            var comments = _logService.GetLogComments(date);
+            foreach (var item in comments)
+            {
+                var comment = new Comment();
+                comment.CreateDate = DateTime.Now;
+                comment.PostId = postId;
+                comment.UserId = 9;
+                comment.Text = item.IPAddress + "/" + item.RequestMethod + "/" + item.RequestPath + "/" + item.ResponseStatusCode + "/" + item.RoutePath + "/" + item.TraceIdentifier + "/" + item.UserAgent;
+                _commentRepository.Add(comment);
+               
+            }
+            try
+            {
+                _commentRepository.SaveChanges();
+                serviceStatus.Status = true;
+                return serviceStatus;
+            }
+            catch (Exception)
+            {
 
+                throw;
+            }
+          
+
+        }
+
+        // Log servis üzerinden çekilen log listesinde en çok ziyaret edilen pathleri yorum olarak kaydetme
+        public ServiceStatus AddLogCommentFilter(int postId)
+        {
+            var serviceStatus = new ServiceStatus();
+            var date = DateTime.Now.Date.AddDays(-1);
+            var comments = _logService.GetLogCommentsFilter(date);
+            foreach (var item in comments)
+            {
+                var comment = new Comment();
+                comment.CreateDate = DateTime.Now;
+                comment.PostId = postId;
+                comment.UserId = 9;
+                comment.Text = item.RequestPath + " Adresine yapılan istek gün içerisinde " + item.viewCount + " defa çağrılmıştır.";
+                _commentRepository.Add(comment);
+
+            }
+            try
+            {
+                _commentRepository.SaveChanges();
+                serviceStatus.Status = true;
+                return serviceStatus;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+
+        }
+      
     }
 }

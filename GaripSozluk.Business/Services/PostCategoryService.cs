@@ -9,18 +9,21 @@ using System.Linq.Expressions;
 using System.Text;
 //using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Rendering;
-
-
-
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
 
 namespace GaripSozluk.Business.Services
 {
     public class PostCategoryService : IPostCategoryService
     {
         private readonly IPostCategoryRepository _postCategoryRepository;
-        public PostCategoryService(IPostCategoryRepository postCategoryRepository)
+        private readonly UserManager<User> _userManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public PostCategoryService(IPostCategoryRepository postCategoryRepository, UserManager<User> userManager, IHttpContextAccessor httpContextAccessor)
         {
             _postCategoryRepository = postCategoryRepository;
+            _userManager = userManager;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public ServiceStatus AddPostCategory(string categoryName)
@@ -55,12 +58,30 @@ namespace GaripSozluk.Business.Services
             return _postCategoryRepository.Get(x => x.Title == categoryName);
         }
 
-        //kategori listesi alıyoruz selectbox için 
+
+
+        //kategori listesi alıyoruz ve selectbox için seçili olanı çekiyoruz
         public List<SelectListItem> PostCategoryList(int selectedCategoryId)
         {
+            var isAdmin = false;
+
+            var httpUser = _httpContextAccessor.HttpContext.User;
+            if (httpUser.Claims.Any())
+            {
+                var user = _userManager.GetUserAsync(httpUser).Result;
+                var roles = _userManager.GetRolesAsync(user).Result;
+                if (roles.Contains("Admin"))
+                {
+                    isAdmin = true;
+                }
+            }
+
             var list = new List<SelectListItem>();
             var postCategories = _postCategoryRepository.GetAll();
-
+            if (isAdmin == false)
+            {
+                postCategories = postCategories.Where(x => x.Title != "Log");
+            }
             foreach (var item in postCategories)
             {
                 var category = new SelectListItem();

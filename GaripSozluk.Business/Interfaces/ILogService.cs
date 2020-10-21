@@ -11,5 +11,9 @@ namespace GaripSozluk.Business.Interfaces
     {
         LogRowVM GetAllLogRowVM(LogRowVM logRowVM);
         void AddLog(HttpContext context);
+
+        List<LogVM> GetLogComments(DateTime dateTime);
+        List<LogFilterVM> GetLogCommentsFilter(DateTime dateTime);
+        
     }
 }

@@ -88,5 +88,42 @@ namespace GaripSozluk.Business.Services
             }
             return model;
         }
+
+
+        // verilen tarihteki log kayıtlarının çekilmesi
+        public List<LogVM> GetLogComments(DateTime dateTime)
+        {
+          var logVMs = new List<LogVM>();
+            var getLog = _logRepository.GetAll(x=>x.CreateDate.Date==dateTime);
+            foreach (var item in getLog)
+            {
+                var getLogVm = new LogVM();
+                getLogVm.IPAddress = item.IPAddress;
+                getLogVm.RequestMethod = item.RequestMethod;
+                getLogVm.RequestPath = item.RequestPath;
+                getLogVm.ResponseStatusCode = item.ResponseStatusCode;
+                getLogVm.RoutePath = item.RoutePath;
+                getLogVm.TraceIdentifier = item.TraceIdentifier;
+                getLogVm.UserAgent = item.UserAgent;
+                logVMs.Add(getLogVm);
+            }
+            return logVMs;
+        }
+
+        // verilen tarihteki log kayıtlarının çekilmesi gruplanması ve sıralanması
+        public List<LogFilterVM> GetLogCommentsFilter(DateTime dateTime)
+        {
+            var logFilterVMs = new List<LogFilterVM>();
+            var getLog = _logRepository.GetAll(x => x.CreateDate.Date == dateTime);
+            var requestPathGroup = getLog.ToList().GroupBy(x => x.RequestPath).OrderByDescending(x => x.Count()).Take(10);
+            foreach (var item in requestPathGroup)
+            {
+                var logFilter = new LogFilterVM();
+                logFilter.RequestPath = item.Key;
+                logFilter.viewCount = item.Count();
+                logFilterVMs.Add(logFilter);
+            }
+            return logFilterVMs;
+        }
     }
 }

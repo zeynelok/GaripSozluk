@@ -18,6 +18,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+
 namespace GaripSozluk.WebApp
 {
     public class Startup
@@ -38,7 +39,7 @@ namespace GaripSozluk.WebApp
             var connectionStringPostgre = Configuration.GetConnectionString("AppDatabasePostgre");
             services.AddDbContext<GaripSozlukDbContextLog>(options => options.UseNpgsql(connectionStringPostgre));
 
-
+       
             services.AddScoped<IPostService, PostService>();
             services.AddScoped<IPostRepository, PostRepository>();
 
