@@ -16,7 +16,9 @@ namespace GaripSozluk.Common.ViewModels
 
         [Display(Name ="Kategori")]
         public int PostCategoryId { get; set; }
- 
+        public int ViewCount { get; set; }
+        public string Comment { get; set; }
+
 
     }
 }

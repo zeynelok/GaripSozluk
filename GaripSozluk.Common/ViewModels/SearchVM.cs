@@ -1,5 +1,4 @@
-﻿using GaripSozluk.Data.Domain;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.InteropServices;
@@ -20,7 +19,7 @@ namespace GaripSozluk.Common.ViewModels
 
         [Display(Name ="Bitiş Tarihi")]
         public DateTime? endDate { get; set; }
-        public List<Post> posts { get; set; }
+        public List<PostVM> posts { get; set; }
          
 
     }

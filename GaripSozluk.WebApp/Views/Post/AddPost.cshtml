@@ -14,14 +14,20 @@
         <label asp-for="PostCategoryId" class="control-label col-md-2"></label>
         <select asp-for="PostCategoryId" class="form-control col-md-4" asp-items="ViewBag.PostCategory">
         </select>
-       
+
     </div>
     <div class="form-group form-row d-flex justify-content-center  mb-3">
         <label asp-for="Title" class="control-label col-md-2"></label>
         <input asp-for="Title" class="form-control col-md-4" />
     </div>
+    <div class="form-group form-row d-flex justify-content-center  mb-3">
+        <label asp-for="Comment" class="control-label col-md-2"></label>
+        @*<input asp-for="Comment" class="form-control col-md-4" />*@
+        <textarea asp-for="Comment" rows="5" cols="40">
 
-  
+  </textarea>
+    </div>
+
     <div class="d-flex justify-content-around  mb-3">
 
 

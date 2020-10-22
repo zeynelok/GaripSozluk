@@ -55,34 +55,46 @@ namespace GaripSozluk.Business.Services
         public ServiceStatus AddPost(PostVM model)
         {
             var serviceStatus = new ServiceStatus();
-
             var httpUser = _httpContextAccessor.HttpContext.User;
 
             var claims = int.Parse(httpUser.Claims.ToList().Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value);
-            var isTherePost = _postRepository.Get(x => x.Title == model.Title);
-            if (isTherePost == null)
+            model.UserId = claims;
+            if (model.Comment!=null)
             {
-                var post = new Post();
-                post.Title = model.Title;
-                post.CreateDate = DateTime.Now;
-                post.UserId = claims;
-                post.PostCategoryId = model.PostCategoryId;
-                post.ViewCount = 1;
-                _postRepository.Add(post);
-
-                try
+               serviceStatus= _postRepository.AddPost(model);
+                return serviceStatus;
+            }
+            else
+            {
+                var isTherePost = _postRepository.Get(x => x.Title == model.Title);
+                if (isTherePost == null)
                 {
-                    _postRepository.SaveChanges();
-                    serviceStatus.Status = true;
-                    return serviceStatus;
+                    var post = new Post();
+                    post.Title = model.Title;
+                    post.CreateDate = DateTime.Now;
+                    post.UserId = claims;
+                    post.PostCategoryId = model.PostCategoryId;
+                    post.ViewCount = 1;
+                    _postRepository.Add(post);
 
-                }
-                catch (Exception ex)
-                {
-                    var errorMessage = ex.Message;
-                    throw;
+                    try
+                    {
+                        _postRepository.SaveChanges();
+                        serviceStatus.Status = true;
+                        return serviceStatus;
+
+                    }
+                    catch (Exception ex)
+                    {
+                        var errorMessage = ex.Message;
+                        throw;
+                    }
                 }
             }
+            
+
+           
+          
             return serviceStatus;
 
         }
@@ -147,12 +159,12 @@ namespace GaripSozluk.Business.Services
             if (model.ranking == 1)
             {
                 var Query = query.OrderByDescending(x => x.CreateDate);
-                model.posts = Query.ToList();
+                model.posts = (List<PostVM>)Query;
             }
             else
             {
                 var Query = query.OrderBy(x => x.CreateDate);
-                model.posts = Query.ToList();
+                model.posts = (List<PostVM>)Query;
             }
 
             return model;
