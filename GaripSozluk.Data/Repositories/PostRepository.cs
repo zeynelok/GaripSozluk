@@ -37,7 +37,15 @@ namespace GaripSozluk.Data.Repositories
                         post.UserId = model.UserId;
                         post.PostCategoryId = model.PostCategoryId;
                         post.ViewCount = 1;
+                        var normalizedName = model.Title.ToLower();
+                        char[] title = new char[] { 'ö', 'ü', 'ı', 'ç', 'ğ', 'ş', ' ' };
+                        char[] normalized = new char[] { 'o', 'u', 'i', 'c', 'g', 's', '-' };
 
+                        for (int i = 0; i < title.Length; i++)
+                        {
+                            normalizedName = normalizedName.Replace(title[i], normalized[i]);
+                        }
+                        post.NormalizedName = normalizedName;
                         var entity = Add(post);
 
                         int resultCount = SaveChanges();

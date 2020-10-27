@@ -9,6 +9,7 @@ using GaripSozluk.WebApp.Models;
 using GaripSozluk.Business.Interfaces;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using GaripSozluk.Common.ViewModels;
+using Microsoft.Extensions.Localization;
 
 namespace GaripSozluk.WebApp.Controllers
 {
@@ -20,7 +21,8 @@ namespace GaripSozluk.WebApp.Controllers
         private readonly ICommentService _commentService;
         private readonly IApiService _apiService;
         private readonly ILogService _logService;
-        public HomeController(ILogger<HomeController> logger, IPostService postService, IPostCategoryService postCategoryService, ICommentService commentService,IApiService apiService,ILogService logService)
+        private readonly IStringLocalizer<HomeController> _localizer;
+        public HomeController(ILogger<HomeController> logger, IPostService postService, IPostCategoryService postCategoryService, ICommentService commentService,IApiService apiService,ILogService logService, IStringLocalizer<HomeController> stringLocalizer)
         {
             _logger = logger;
             _postService = postService;
@@ -28,11 +30,15 @@ namespace GaripSozluk.WebApp.Controllers
             _commentService = commentService;
             _apiService = apiService;
             _logService = logService;
+            _localizer = stringLocalizer;
         }
 
         // Ana Sayfa
         public IActionResult Index(string searchText, int selectedCategoryId=1,  int? postId=null,int currentPage=1)
-        {       
+        {
+            //ViewData["Title"] = _localizer.GetString("Title");
+
+
             //Todo: Viewbag kısımları mümkün oldukça model içine koyup öyle dönelim. Mesela PostRowVM içine viewbag ile view tarafına döneceğin verileri de dahil etmek iyi bir çözüm olur.
             ViewBag.PostCategory = _postCategoryService.PostCategoryList(selectedCategoryId);          
             ViewBag.PostCategoryName = _postCategoryService.GetPostCategory(selectedCategoryId);
